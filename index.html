@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Обратный чек-лист — Захаров Альберт — Академия УМ</title>
+  <meta name="description" content="Самооценка кандидата после стажировки: знаю / понял / не успели / неясно. Захаров Альберт, СПК Успенка, 17–20.11.2026." />
+  <meta name="theme-color" content="#222222" />
+  <style>
+    :root {
+      --ink: #222;
+      --paper: #fff;
+      --page-w: 210mm;
+      --font: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.4;
+      background: #f0f0f0;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .toolbar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #555; color: #fff; font-size: 12px;
+    }
+    .toolbar .brand { display: flex; align-items: center; gap: 8px; }
+    .toolbar .brand img {
+      height: 28px; background: #fff; padding: 2px 4px;
+      filter: grayscale(1) opacity(0.85);
+    }
+    .toolbar .actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .toolbar button {
+      border: 1px solid #ccc; background: transparent; color: #fff;
+      font: inherit; font-size: 12px; padding: 5px 10px; cursor: pointer;
+    }
+    .toolbar button.primary { background: #fff; color: #444; border-color: #fff; }
+    .toolbar .status { font-size: 11px; opacity: .85; }
+    .sheet-wrap { width: min(var(--page-w), calc(100% - 16px)); margin: 12px auto 32px; }
+    .sheet {
+      background: var(--paper);
+      border: 1px solid #bbb;
+      box-shadow: 0 1px 6px rgba(0,0,0,.08);
+      padding: 16px 14px 22px;
+    }
+    .motto { text-align: center; color: #888; font-size: 12px; margin: 0 0 8px; letter-spacing: .04em; }
+    .title-block {
+      text-align: center; margin: 0 0 12px; padding: 0 0 10px; border-bottom: 1px solid #ccc;
+    }
+    .title-block .logo {
+      display: block; width: min(140px, 42%); height: auto; margin: 0 auto 6px;
+      filter: grayscale(1) opacity(0.75);
+    }
+    .eyebrow { margin: 0; font-size: 11px; color: #999; }
+    h1 { font-weight: 600; font-size: 17px; margin: 4px 0 2px; color: #555; }
+    .meta { display: grid; gap: 8px; margin: 0 0 12px; }
+    .field {
+      display: grid; grid-template-columns: 180px 1fr; gap: 8px;
+      align-items: end; font-size: 14px;
+    }
+    .field span { color: #444; }
+    .field .ink, .sign .ink {
+      border: none; border-bottom: 1px solid #999; background: transparent;
+      font: inherit; font-size: 14px; padding: 2px 4px; width: 100%;
+    }
+    .scheme { margin: 0 0 14px; font-size: 13px; color: #555; line-height: 1.45; }
+    .scheme b { color: #444; }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: 8px 14px;
+      margin: 0 0 14px; font-size: 12px; color: #555;
+    }
+    .block { margin: 0 0 16px; }
+    h2 { font-weight: 600; font-size: 15px; color: #444; margin: 0 0 6px; }
+    .when { margin: 0 0 8px; font-size: 12px; color: #777; }
+    .head-row, .row {
+      display: grid;
+      grid-template-columns: 1fr 52px 52px 64px 56px;
+      gap: 4px;
+      align-items: center;
+      padding: 5px 0;
+      border-bottom: 1px solid #eee;
+    }
+    .head-row {
+      font-size: 11px; color: #666; font-weight: 600;
+      border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-bottom: 2px;
+    }
+    .head-row span, .row .pick { text-align: center; }
+    .row-text { font-size: 13px; line-height: 1.35; padding-right: 4px; }
+    .pick {
+      display: flex; justify-content: center; align-items: center;
+      cursor: pointer; font-size: 0;
+    }
+    .pick span { display: none; }
+    .pick input { width: 15px; height: 15px; margin: 0; cursor: pointer; }
+    .admit {
+      margin: 18px 0 0; padding-top: 12px; border-top: 1px solid #ccc;
+    }
+    .admit h2 { margin-bottom: 8px; }
+    .sign { display: grid; gap: 8px; margin-top: 10px; }
+    .sign .field { grid-template-columns: 160px 1fr; }
+    @media (max-width: 700px) {
+      .head-row, .row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+      .head-row { display: none; }
+      .pick {
+        justify-content: flex-start; gap: 6px; font-size: 13px;
+      }
+      .pick span { display: inline; color: #444; }
+      .field, .sign .field { grid-template-columns: 1fr; }
+    }
+    @media print {
+      .toolbar { display: none !important; }
+      body { background: #fff; font-size: 12px; }
+      .sheet-wrap { width: 100%; margin: 0; }
+      .sheet { border: none; box-shadow: none; padding: 0; }
+      .title-block .logo { width: 100px; opacity: .55; filter: grayscale(1); }
+      .row-text { font-size: 11px; }
+      .block { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <div class="brand">
+      <img src="assets/logo.png" alt="У Михалыча" width="120" height="36" />
+      <span>Академия УМ · обратный чек-лист · Захаров</span>
+    </div>
+    <div class="actions">
+      <span class="status" id="save-status">онлайн-сохранение в этом браузере</span>
+      <button type="button" id="btn-save">Сохранить</button>
+      <button type="button" id="btn-clear">Очистить</button>
+      <button type="button" class="primary" id="btn-print">Печать / PDF</button>
+    </div>
+  </div>
+
+  <div class="sheet-wrap">
+    <article class="sheet" id="checklist">
+      <p class="motto">Делаем мир крепче</p>
+      <header class="title-block">
+        <img class="logo" src="assets/logo.png" alt="У Михалыча" width="250" height="72" />
+        <p class="eyebrow">Академия УМ · сеть «У Михалыча»</p>
+        <h1>Обратный чек-лист · для кандидата</h1>
+      </header>
+
+      <div class="meta">
+        
+    <label class="field">
+      <span>Стажёр</span>
+      <input type="text" data-k class="ink" autocomplete="off" value="Захаров Альберт" />
+    </label>
+        
+    <label class="field">
+      <span>Должность</span>
+      <input type="text" data-k class="ink" autocomplete="off" value="СПК Успенка" />
+    </label>
+        
+    <label class="field">
+      <span>Место стажировки</span>
+      <input type="text" data-k class="ink" autocomplete="off" value="Перевалово" />
+    </label>
+        
+    <label class="field">
+      <span>Даты стажировки</span>
+      <input type="text" data-k class="ink" autocomplete="off" value="17.11.2026 · 18.11.2026 · 19.11.2026 · 20.11.2026" />
+    </label>
+        
+    <label class="field">
+      <span>Наставник</span>
+      <input type="text" data-k class="ink" autocomplete="off" value="Суковатая Ольга, СПК Перевалово" />
+    </label>
+      </div>
+
+      <p class="scheme">
+        <b>Заполняет кандидат</b> Захаров Альберт.<br />
+        По каждому пункту полной программы 5 недель отметьте одно:
+        <b>Знаю</b> — умею сам · <b>Понял</b> — разобрали, ещё нужна практика ·
+        <b>Не успели</b> — за 4 дня не дошли · <b>Неясно</b> — совсем непонятно, нужно объяснение.
+      </p>
+
+      <div class="legend">
+        <span>☐ Знаю</span>
+        <span>☐ Понял</span>
+        <span>☐ Не успели</span>
+        <span>☐ Неясно</span>
+      </div>
+
+      
+    <section class="block">
+      <h2>1. Кладовщик</h2>
+      <p class="when">Из полной программы 5 недель</p>
+      <div class="head-row">
+        <div class="row-text">Навык / тема</div>
+        <span>Знаю</span><span>Понял</span><span>Не успели</span><span>Неясно</span>
+      </div>
+      
+    <div class="row">
+      <div class="row-text">Обойти склад и зону приёмки: маршруты, зоны хранения, брак, ворота</div>
+      <label class="pick"><input type="radio" name="s0" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s0" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s0" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s0" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа в 1С:Торговля по складским операциям: остаток, карточка, документы</div>
+      <label class="pick"><input type="radio" name="s1" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s1" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s1" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s1" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа с ТСД на складе</div>
+      <label class="pick"><input type="radio" name="s2" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s2" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s2" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s2" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Приёмка с РЦ</div>
+      <label class="pick"><input type="radio" name="s3" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s3" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s3" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s3" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Приёмка от поставщиков</div>
+      <label class="pick"><input type="radio" name="s4" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s4" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s4" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s4" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Перемещения между магазинами под клиентов</div>
+      <label class="pick"><input type="radio" name="s5" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s5" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s5" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s5" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Подготовка товара к перемещению на РЦ или по заявке ИМ</div>
+      <label class="pick"><input type="radio" name="s6" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s6" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s6" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s6" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Сборка автозаказов</div>
+      <label class="pick"><input type="radio" name="s7" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s7" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s7" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s7" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Сборка и выдача заказов интернет-магазина</div>
+      <label class="pick"><input type="radio" name="s8" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s8" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s8" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s8" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Пересчёты и задания от ревизионного отдела</div>
+      <label class="pick"><input type="radio" name="s9" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s9" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s9" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s9" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа с браком: куда класть, как учитывать, кого привлекать</div>
+      <label class="pick"><input type="radio" name="s10" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s10" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s10" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s10" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа с отрицательными остатками</div>
+      <label class="pick"><input type="radio" name="s11" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s11" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s11" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s11" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Закрытие дня склада: 1С проведено, ТСД закрыт, ворота на ключ</div>
+      <label class="pick"><input type="radio" name="s12" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s12" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s12" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s12" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Самостоятельно принять машину (приёмка без подсказок)</div>
+      <label class="pick"><input type="radio" name="s13" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s13" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s13" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s13" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    </section>
+    <section class="block">
+      <h2>2. Кассир</h2>
+      <p class="when">Из полной программы 5 недель</p>
+      <div class="head-row">
+        <div class="row-text">Навык / тема</div>
+        <span>Знаю</span><span>Понял</span><span>Не успели</span><span>Неясно</span>
+      </div>
+      
+    <div class="row">
+      <div class="row-text">Открытие и закрытие смены на кассе</div>
+      <label class="pick"><input type="radio" name="s14" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s14" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s14" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s14" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Проверка расходников и связь с эквайринговым терминалом</div>
+      <label class="pick"><input type="radio" name="s15" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s15" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s15" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s15" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Продажа наличными и картой; сдача и оформление чека</div>
+      <label class="pick"><input type="radio" name="s16" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s16" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s16" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s16" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Возврат своего магазина и порядок возврата из другого магазина сети</div>
+      <label class="pick"><input type="radio" name="s17" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s17" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s17" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s17" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Размен и вечерний кассовый отчёт</div>
+      <label class="pick"><input type="radio" name="s18" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s18" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s18" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s18" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа с подарочным сертификатом, скидками и промокодами</div>
+      <label class="pick"><input type="radio" name="s19" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s19" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s19" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s19" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа с весовым товаром и весами</div>
+      <label class="pick"><input type="radio" name="s20" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s20" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s20" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s20" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа и продажи на КСО</div>
+      <label class="pick"><input type="radio" name="s21" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s21" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s21" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s21" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Допродажи на кассе: сопутка, увеличение чека</div>
+      <label class="pick"><input type="radio" name="s22" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s22" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s22" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s22" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Печать и замена ценников; работа с акциями на кассе и в зале рядом с кассой</div>
+      <label class="pick"><input type="radio" name="s23" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s23" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s23" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s23" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Действия при ошибке терминала и типовых сбоях кассы</div>
+      <label class="pick"><input type="radio" name="s24" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s24" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s24" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s24" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    </section>
+    <section class="block">
+      <h2>3. Продавец-консультант</h2>
+      <p class="when">Из полной программы 5 недель</p>
+      <div class="head-row">
+        <div class="row-text">Навык / тема</div>
+        <span>Знаю</span><span>Понял</span><span>Не успели</span><span>Неясно</span>
+      </div>
+      
+    <div class="row">
+      <div class="row-text">Продажа: встреча, потребность, оффер 2–3, закрытие</div>
+      <label class="pick"><input type="radio" name="s25" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s25" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s25" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s25" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Допродажи и предложение сопутствующего товара</div>
+      <label class="pick"><input type="radio" name="s26" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s26" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s26" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s26" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Доп. сервисы: доставка, погрузка, под заказ, помощь донести до машины</div>
+      <label class="pick"><input type="radio" name="s27" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s27" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s27" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s27" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа в 1С: поиск товара в Помощнике продаж, остаток, наличие по телефону только после проверки</div>
+      <label class="pick"><input type="radio" name="s28" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s28" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s28" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s28" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Что ещё делает ПК помимо продаж: выкладка, ценники, чистота зоны, помощь складу и кассе</div>
+      <label class="pick"><input type="radio" name="s29" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s29" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s29" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s29" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Утренняя выкатка, порядок на улице и вечерняя закатка товара</div>
+      <label class="pick"><input type="radio" name="s30" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s30" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s30" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s30" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Сборка техники вместе с РТЗ на примере одной позиции</div>
+      <label class="pick"><input type="radio" name="s31" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s31" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s31" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s31" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа с лояльностью: QR / бонусы</div>
+      <label class="pick"><input type="radio" name="s32" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s32" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s32" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s32" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Аналитика своих чеков за день</div>
+      <label class="pick"><input type="radio" name="s33" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s33" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s33" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s33" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    </section>
+    <section class="block">
+      <h2>4. МОП</h2>
+      <p class="when">Из полной программы 5 недель</p>
+      <div class="head-row">
+        <div class="row-text">Навык / тема</div>
+        <span>Знаю</span><span>Понял</span><span>Не успели</span><span>Неясно</span>
+      </div>
+      
+    <div class="row">
+      <div class="row-text">Карточка корпоративного клиента и условия работы</div>
+      <label class="pick"><input type="radio" name="s34" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s34" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s34" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s34" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Оформление заказа и реализации для юрлица</div>
+      <label class="pick"><input type="radio" name="s35" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s35" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s35" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s35" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Проверка доверенности и комплекта документов на отгрузку</div>
+      <label class="pick"><input type="radio" name="s36" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s36" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s36" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s36" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Выписка УПД и контроль подписания</div>
+      <label class="pick"><input type="radio" name="s37" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s37" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s37" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s37" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа в ЭДО</div>
+      <label class="pick"><input type="radio" name="s38" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s38" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s38" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s38" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Документооборот магазина по корпоративным отгрузкам и оплатам</div>
+      <label class="pick"><input type="radio" name="s39" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s39" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s39" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s39" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Типичные вопросы и возражения корпоративного клиента</div>
+      <label class="pick"><input type="radio" name="s40" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s40" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s40" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s40" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Связка МОП — склад — касса: кто что делает на отгрузке</div>
+      <label class="pick"><input type="radio" name="s41" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s41" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s41" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s41" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    </section>
+    <section class="block">
+      <h2>5. СПК</h2>
+      <p class="when">Из полной программы 5 недель</p>
+      <div class="head-row">
+        <div class="row-text">Навык / тема</div>
+        <span>Знаю</span><span>Понял</span><span>Не успели</span><span>Неясно</span>
+      </div>
+      
+    <div class="row">
+      <div class="row-text">Управление командой: пятиминутка, постановка задач, контроль исполнения</div>
+      <label class="pick"><input type="radio" name="s42" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s42" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s42" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s42" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Обход точки и фиксация замечаний с исполнителями и сроком</div>
+      <label class="pick"><input type="radio" name="s43" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s43" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s43" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s43" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа с отчётами и задачами в Битрикс24</div>
+      <label class="pick"><input type="radio" name="s44" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s44" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s44" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s44" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Работа с отчётами в 1С: ТО, план/факт, неликвиды, мотивация сотрудников</div>
+      <label class="pick"><input type="radio" name="s45" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s45" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s45" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s45" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Контроль состояния магазина: товар в зале, ценники, чистота, внешний вид смены</div>
+      <label class="pick"><input type="radio" name="s46" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s46" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s46" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s46" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Мин-максы, пустые крючки и «извиняшки»</div>
+      <label class="pick"><input type="radio" name="s47" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s47" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s47" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s47" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Контроль кассира, продавца, РТЗ и кладовщика в течение смены</div>
+      <label class="pick"><input type="radio" name="s48" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s48" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s48" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s48" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Кому звонить в нештатных ситуациях</div>
+      <label class="pick"><input type="radio" name="s49" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s49" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s49" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s49" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    <div class="row">
+      <div class="row-text">Полный день управления командой: планерки, чек-листы, задачи, состояние магазина</div>
+      <label class="pick"><input type="radio" name="s50" data-k value="know" /><span>Знаю</span></label>
+      <label class="pick"><input type="radio" name="s50" data-k value="got" /><span>Понял</span></label>
+      <label class="pick"><input type="radio" name="s50" data-k value="skip" /><span>Не успели</span></label>
+      <label class="pick"><input type="radio" name="s50" data-k value="unclear" /><span>Неясно</span></label>
+    </div>
+    </section>
+
+      <section class="admit">
+        <h2>Комментарий кандидата</h2>
+        
+    <label class="field">
+      <span>Что самое полезное за 4 дня</span>
+      <input type="text" data-k class="ink" autocomplete="off" />
+    </label>
+        
+    <label class="field">
+      <span>Что обязательно доучить в первую очередь</span>
+      <input type="text" data-k class="ink" autocomplete="off" />
+    </label>
+        
+    <label class="field">
+      <span>Вопросы, которые остались</span>
+      <input type="text" data-k class="ink" autocomplete="off" />
+    </label>
+        <div class="sign">
+          
+    <label class="field">
+      <span>Подпись стажёра</span>
+      <input type="text" data-k class="ink" autocomplete="off" value="Захаров Альберт" />
+    </label>
+          
+    <label class="field">
+      <span>Подпись наставника</span>
+      <input type="text" data-k class="ink" autocomplete="off" value="Суковатая Ольга" />
+    </label>
+          
+    <label class="field">
+      <span>Дата</span>
+      <input type="text" data-k class="ink" autocomplete="off" value="20.11.2026" />
+    </label>
+        </div>
+      </section>
+    </article>
+  </div>
+
+  <script>
+  (function () {
+    const KEY = "um-academy-spk-zaharov-reverse-20261117";
+    const root = document.getElementById("checklist");
+    const status = document.getElementById("save-status");
+    const fields = () => root.querySelectorAll("[data-k]");
+
+    function assignIds() {
+      fields().forEach((el, i) => {
+        if (!el.dataset.id) el.dataset.id = "f" + i;
+      });
+    }
+
+    function collect() {
+      const data = {};
+      fields().forEach((el) => {
+        const id = el.dataset.id;
+        if (el.type === "radio") {
+          if (el.checked) data[id] = el.value;
+        } else if (el.type === "checkbox") {
+          data[id] = el.checked;
+        } else {
+          data[id] = el.value;
+        }
+      });
+      // also store selected radio by name
+      root.querySelectorAll('input[type="radio"]:checked').forEach((el) => {
+        data["n:" + el.name] = el.value;
+      });
+      return data;
+    }
+
+    function apply(data) {
+      if (!data) return;
+      fields().forEach((el) => {
+        const id = el.dataset.id;
+        if (el.type === "radio") {
+          const byName = data["n:" + el.name];
+          if (byName) el.checked = el.value === byName;
+          else if (id in data) el.checked = data[id] === el.value;
+        } else if (el.type === "checkbox") {
+          if (id in data) el.checked = !!data[id];
+        } else if (id in data && data[id]) {
+          el.value = data[id];
+        }
+      });
+    }
+
+    function save(manual) {
+      try {
+        localStorage.setItem(KEY, JSON.stringify(collect()));
+        const t = new Date();
+        status.textContent = (manual ? "сохранено " : "автосохранение ") +
+          t.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+      } catch (e) {
+        status.textContent = "не удалось сохранить";
+      }
+    }
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(KEY);
+        if (raw) apply(JSON.parse(raw));
+      } catch (e) {}
+    }
+
+    assignIds();
+    load();
+
+    let timer;
+    root.addEventListener("input", () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => save(false), 400);
+    });
+    root.addEventListener("change", () => save(false));
+    document.getElementById("btn-save").addEventListener("click", () => save(true));
+    document.getElementById("btn-print").addEventListener("click", () => {
+      save(true);
+      window.print();
+    });
+    document.getElementById("btn-clear").addEventListener("click", () => {
+      if (!confirm("Очистить отметки в этом браузере?")) return;
+      fields().forEach((el) => {
+        if (el.type === "radio" || el.type === "checkbox") el.checked = false;
+        else if (el.defaultValue) el.value = el.defaultValue;
+        else el.value = "";
+      });
+      localStorage.removeItem(KEY);
+      status.textContent = "очищено";
+    });
+  })();
+  </script>
+</body>
+</html>
